@@ -1,31 +1,19 @@
 from openai import OpenAI
 import streamlit as st
 
-with st.sidebar:
-    openai_api_key = st.text_input("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", key="chatbot_api_key", type="password")
-    "[Get an OpenAI API key](https://platform.openai.com/account/api-keys)"
-    "[View the source code](https://github.com/streamlit/llm-examples/blob/main/Chatbot.py)"
-    "[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/streamlit/llm-examples?quickstart=1)"
+openai_api_key = "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"
+st.set_page_config(page_title="AB+ Testing Platform",
+                   page_icon="🚀", layout="wide")
+st.title("💬 AB+")
+st.caption("🚀 Faster iterations for your AB testing!")
 
-st.title("💬 Chatbot")
-st.caption("🚀 A streamlit chatbot powered by OpenAI LLM")
-
-if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "assistant", "content": "How can I help you?"}]
-    #import pdb;pdb.set_trace()
-
-for msg in st.session_state.messages:
-    st.chat_message(msg["role"]).write(msg["content"])
-
-if prompt := st.chat_input():
-    if not openai_api_key:
-        st.info("Please add your OpenAI API key to continue.")
-        st.stop()
-
-    client = OpenAI(api_key=openai_api_key)
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    st.chat_message("user").write(prompt)
-    response = client.chat.completions.create(model="gpt-3.5-turbo", messages=st.session_state.messages)
-    msg = response.choices[0].message.content
-    st.session_state.messages.append({"role": "assistant", "content": msg})
-    st.chat_message("assistant").write(msg)
+# Image upload section
+uploaded_file = st.file_uploader(
+    "What ad would you like to optimize?", type=['png', 'jpg', 'jpeg'])
+if uploaded_file is not None:
+    # To See details
+    file_details = {"FileName": uploaded_file.name,
+                    "FileType": uploaded_file.type, "FileSize": uploaded_file.size}
+    st.write(file_details)
+    # To Display image
+    st.image(uploaded_file, caption='Uploaded Image.')
