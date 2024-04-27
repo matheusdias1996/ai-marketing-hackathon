@@ -6,23 +6,12 @@ import base64
 import prompts
 import utils
 
-TEST_DEMOGRAPHIC = """
-The advertisement targets consumers of a supermarket in Vitória, Espírito Santo, Brazil. The supermarket targets people who value convenience and fresh products in general, but also just people who are looking to make grocery purchases. The supermarket is also famous for being related to local products and supporting the community. It also has a good assortment of Arabic products given owners are Lebanese descendants.
-"""
-
-ORIGINAL_POST_TEXT = """
-Adoramos esse coração de alcatra Maturatta da Friboi.
-Carne muito macia, saborosa e com a gordura na medida certa.
-Ideal para fazer na chapa ou numa frigideira bem quente.
-De acompanhamento batatinhas pequenas, ao azeite e molho chimichurri.
-O preço é 59,90 / kg
-"""
-
-API_KEY = "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"
+# "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"
+API_KEY = "sk-proj-6Q8ZvyjEGIvU5wFEoUXUT3BlbkFJhnTyD6745V0BgvKBG9BA"
 client = OpenAI(api_key=API_KEY)
 
 
-def generate_ad_description(image_url, demographic, original_post_text):
+def generate_ad_description_and_post(image_url, demographic, original_post_text):
   response = client.chat.completions.create(
       model="gpt-4-turbo",
       temperature=0,
@@ -86,13 +75,11 @@ def generate_ad_description(image_url, demographic, original_post_text):
       ],
   )
   output = response.choices[0].message.content
-  print(output)
   parsed_output = utils.parse_descriptions_and_posts(output)
-  print(parsed_output)
   # ad_description, post_text = output.split(
   #     "POST TEXT:")[0], output.split("POST TEXT:")[1]
   # return ad_description, post_text
-  return parsed_output['DESCRIPTION 1'], parsed_output['POST TEXT 1']
+  return parsed_output
 
 
 def generate_ad_image(ad_description):
@@ -106,23 +93,36 @@ def generate_ad_image(ad_description):
   return response.data[0].url
 
 
-def encode_image(image_path, demographic=TEST_DEMOGRAPHIC):
+def encode_image(image_path, demographic=prompts.TEST_DEMOGRAPHIC):
   with open(image_path, "rb") as image_file:
     return base64.b64encode(image_file.read()).decode('utf-8')
 
 
-def main(image_path="meat_picture_original.jpeg", demographic=TEST_DEMOGRAPHIC, original_post_text=ORIGINAL_POST_TEXT):
+def main(image_path="meat_picture_original.jpeg", demographic=prompts.TEST_DEMOGRAPHIC, original_post_text=prompts.ORIGINAL_POST_TEXT):
   # TODO: Get image from shared drive and prepare it for OAI API
   image_url = encode_image(image_path)
   # TODO: Input image and text to generate description of ad, caption and hashtags
-  ad_description, post_text = generate_ad_description(
+  ad_description_and_post = generate_ad_description_and_post(
       image_url, demographic, original_post_text)
-  # TODO: Generate an image from description
-  print("ad_description: ", ad_description)
-  new_image_url = generate_ad_image(ad_description)
-  # TODO: Upload into shared drive
-  utils.save_image_from_url(new_image_url, "test.png")
-  print(post_text)
+
+  for i in range(1, 6):
+    description_key = f"DESCRIPTION {i}"
+    post_text_key = f"POST TEXT {i}"
+
+    # Retrieve the ad description and post text
+    ad_description = ad_description_and_post[description_key]
+    post_text = ad_description_and_post[post_text_key]
+
+    # Generate an image from the ad description
+    new_image_url = generate_ad_image(ad_description)
+
+    # Save the generated image to a unique file name
+    # Ensures the file name is image_001, image_002, etc.
+    image_filename = f"image_{i:03}.png"
+    utils.save_image_from_url(new_image_url, image_filename)
+
+    # Print the indexed post text
+    print(f"{i}: {post_text}")
 
 
 if __name__ == "__main__":
