@@ -7,7 +7,7 @@ import prompts
 import utils
 
 TEST_DEMOGRAPHIC = """
-The advertisement targets consumers of a supermarket in Vitória, Espírito Santo, Brazil. The supermarket targets people who value convenience and fresh products in general, but also just people who are looking to make grocery purchases. The supermarket is also famous for being related to local products and supporting the community. It also has a good assortment of Arabic products given owners are Lebanese descendants
+The advertisement targets consumers of a supermarket in Vitória, Espírito Santo, Brazil. The supermarket targets people who value convenience and fresh products in general, but also just people who are looking to make grocery purchases. The supermarket is also famous for being related to local products and supporting the community. It also has a good assortment of Arabic products given owners are Lebanese descendants.
 """
 
 ORIGINAL_POST_TEXT = """
@@ -18,7 +18,7 @@ De acompanhamento batatinhas pequenas, ao azeite e molho chimichurri.
 O preço é 59,90 / kg
 """
 
-API_KEY = "sk-proj-7GDtrJLW3lqORNvILNguT3BlbkFJjcFGj5kO98gxIQKWqjxU"
+API_KEY = "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"
 client = OpenAI(api_key=API_KEY)
 
 
@@ -118,6 +118,7 @@ def main(image_path="meat_picture_original.jpeg", demographic=TEST_DEMOGRAPHIC, 
   ad_description, post_text = generate_ad_description(
       image_url, demographic, original_post_text)
   # TODO: Generate an image from description
+  print("ad_description: ", ad_description)
   new_image_url = generate_ad_image(ad_description)
   # TODO: Upload into shared drive
   utils.save_image_from_url(new_image_url, "test.png")
