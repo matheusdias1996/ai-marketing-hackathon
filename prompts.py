@@ -4,7 +4,7 @@ You are a marketing specialist who has been asked to improve an advertisement fo
 DESCRIPTION 1:
 ...
 
-POST TEXT:
+POST TEXT 1:
 ...
 
 DESCRIPTION 2:

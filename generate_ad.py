@@ -1,7 +1,8 @@
 from openai import OpenAI
-from PIL import Image
 from IPython.display import Image, display
 import base64
+import argparse
+import json
 
 import prompts
 import utils
@@ -93,18 +94,18 @@ def generate_ad_image(ad_description):
   return response.data[0].url
 
 
-def encode_image(image_path, demographic=prompts.TEST_DEMOGRAPHIC):
+def encode_image(image_path):
   with open(image_path, "rb") as image_file:
     return base64.b64encode(image_file.read()).decode('utf-8')
 
 
-def main(image_path="meat_picture_original.jpeg", demographic=prompts.TEST_DEMOGRAPHIC, original_post_text=prompts.ORIGINAL_POST_TEXT):
+def main(image_path, demographic, original_post_text):
   # TODO: Get image from shared drive and prepare it for OAI API
   image_url = encode_image(image_path)
   # TODO: Input image and text to generate description of ad, caption and hashtags
   ad_description_and_post = generate_ad_description_and_post(
       image_url, demographic, original_post_text)
-
+  output_data = []
   for i in range(1, 6):
     description_key = f"DESCRIPTION {i}"
     post_text_key = f"POST TEXT {i}"
@@ -121,9 +122,29 @@ def main(image_path="meat_picture_original.jpeg", demographic=prompts.TEST_DEMOG
     image_filename = f"image_{i:03}.png"
     utils.save_image_from_url(new_image_url, image_filename)
 
+    output_data.append({
+        "image_filename": image_filename,
+        "post_text": post_text
+    })
+
+    with open('output_data.json', 'w') as json_file:
+        json.dump(output_data, json_file)
+
     # Print the indexed post text
     print(f"{i}: {post_text}")
 
+    # TODO: Make this show in streamlit
+
 
 if __name__ == "__main__":
-  main()
+    parser = argparse.ArgumentParser(
+        description="Generate enhanced advertisements based on demographics and existing content.")
+    parser.add_argument('--image_path', type=str,
+                        required=True, help='Path to the image file')
+    parser.add_argument('--demographic', type=str,
+                        required=True, help='Demographic information')
+    parser.add_argument('--original_post_text', type=str,
+                        help='Original post text')
+    args = parser.parse_args()
+
+    main(args.image_path, args.demographic, args.original_post_text)
