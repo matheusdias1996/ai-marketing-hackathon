@@ -7,12 +7,27 @@ import json
 import prompts
 import utils
 
+from guardrails.hub import CompetitorCheck, ToxicLanguage
+from guardrails import Guard, OnFailAction
+
 # "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"
 API_KEY = "sk-proj-6Q8ZvyjEGIvU5wFEoUXUT3BlbkFJhnTyD6745V0BgvKBG9BA"
 client = OpenAI(api_key=API_KEY)
 
 
 def generate_ad_description_and_post(image_url, demographic, original_post_text):
+  
+  guard = Guard().use(
+    ToxicLanguage(threshold=0.5, validation_method="sentence", on_fail=OnFailAction.EXCEPTION)
+  )
+  
+  try:
+    guard.validate(
+          demographic
+      )  # Both the guardrails fail
+  except Exception as e:
+      print(e)
+
   f_post_text1 = open("instagram_top_posts/2020-10-10_15-12-45_UTC.txt", "r", encoding="utf8")
   f_post_text2 = open("instagram_top_posts/2020-11-12_15-14-23_UTC.txt", "r", encoding="utf8")
   image_url1, post_text1, image_url2, post_text2 = encode_image("instagram_top_posts/2020-10-10_15-12-45_UTC.jpg"), f_post_text1.read(), encode_image("instagram_top_posts/2020-11-12_15-14-23_UTC_5.jpg"), f_post_text2.read() 
