@@ -42,7 +42,7 @@ if uploaded_file is not None:
 
 button_clicked = st.button("OK")
 if button_clicked and uploaded_file is not None:
-    command = f'python generate_ad.py --image_path "{uploaded_file.name}" --demographic "{selected}" --original_post_text "{original_post_text}"'
+    command = f'python generate_ad.py --image_path "{uploaded_file.name}" --demographic "{selected}" --original_post_text "{original_post_text}" --image_url1 "{uploaded_file.name}" --post_text1 "{original_post_text}" --image_url2 "{uploaded_file.name}" --post_text2 "{original_post_text}"'
     subprocess.run(command, shell=True)
 
     # Read the output data

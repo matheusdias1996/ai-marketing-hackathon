@@ -13,6 +13,9 @@ client = OpenAI(api_key=API_KEY)
 
 
 def generate_ad_description_and_post(image_url, demographic, original_post_text):
+  f_post_text1 = open("instagram_top_posts/2020-10-10_15-12-45_UTC.txt", "r", encoding="utf8")
+  f_post_text2 = open("instagram_top_posts/2020-11-12_15-14-23_UTC.txt", "r", encoding="utf8")
+  image_url1, post_text1, image_url2, post_text2 = encode_image("instagram_top_posts/2020-10-10_15-12-45_UTC.jpg"), f_post_text1.read(), encode_image("instagram_top_posts/2020-11-12_15-14-23_UTC_5.jpg"), f_post_text2.read() 
   response = client.chat.completions.create(
       model="gpt-4-turbo",
       temperature=0,
@@ -72,7 +75,85 @@ def generate_ad_description_and_post(image_url, demographic, original_post_text)
                       },
                   },
               ],
-          }
+          },
+
+          {
+              "role": "user",
+              "content": [
+                  {
+                      "type": "text",
+                      "text": "EXAMPLE 1:",
+                  }
+              ]
+          },
+          {
+              "role": "user",
+              "content": [
+                  {
+                      "type": "text",
+                      "text": "Post Text:",
+                  }
+              ]
+          },
+          {
+              "role": "user",
+              "content": [
+                  {
+                      "type": "text",
+                      "text": post_text1,
+                  }
+              ]
+          },
+          {
+              "role": "user",
+              "content": [
+                  {
+                      "type": "image_url",
+                      "image_url": {
+                          "url": f"data:image/jpeg;base64,{image_url1}",
+                      },
+                  },
+              ],
+          },
+
+          {
+              "role": "user",
+              "content": [
+                  {
+                      "type": "text",
+                      "text": "EXAMPLE 2:",
+                  }
+              ]
+          },
+          {
+              "role": "user",
+              "content": [
+                  {
+                      "type": "text",
+                      "text": "Post Text:",
+                  }
+              ]
+          },
+          {
+              "role": "user",
+              "content": [
+                  {
+                      "type": "text",
+                      "text": post_text2,
+                  }
+              ]
+          },
+          {
+              "role": "user",
+              "content": [
+                  {
+                      "type": "image_url",
+                      "image_url": {
+                          "url": f"data:image/jpeg;base64,{image_url2}",
+                      },
+                  },
+              ],
+          },
       ],
   )
   output = response.choices[0].message.content
