@@ -10,6 +10,7 @@ We tested this on the Meta ads platform and found that in our posts, the AI-gene
 ### Example:
 
 ---> Model Input
+
 ORIGINAL TEXT
 
 Adoramos esse coração de alcatra Maturatta da Friboi.
