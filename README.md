@@ -18,7 +18,7 @@ De acompanhamento batatinhas pequenas, ao azeite e molho chimichurri.
 O preço é 59,90 / kg
 
 ORIGINAL IMAGE
-![plot](/.Original.jpeg)
+![plot](https://raw.githubusercontent.com/matheusdias1996/ai-marketing-hackathon/blob/main/Original.jpeg)
 
 ---> Model Output
 
