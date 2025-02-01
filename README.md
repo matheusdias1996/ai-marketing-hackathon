@@ -11,6 +11,7 @@ We tested this on the Meta ads platform and found that in our posts, the AI-gene
 
 ---> Model Input
 ORIGINAL TEXT
+
 Adoramos esse coração de alcatra Maturatta da Friboi.
 Carne muito macia, saborosa e com a gordura na medida certa.
 Ideal para fazer na chapa ou numa frigideira bem quente.
